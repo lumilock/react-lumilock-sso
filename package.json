@@ -8,7 +8,7 @@
     "test": "run-s test:unit test:lint test:build",
     "test:lint": "eslint src/**/*.js",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test -env=jsdom --coverage --collectCoverageFrom=src/components/**/*.js",
+    "test:watch": "react-scripts test --env=jsdom --coverage --collectCoverageFrom=src/components/**/*.js",
     "test:build": "run-s build",
     "lint:fix": "prettier-eslint '**/*.js' --write"
   },
@@ -24,7 +24,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js, jsx}": [
+    "src/**/*.{js,jsx}": [
       "npm run lint:fix"
     ]
   },
