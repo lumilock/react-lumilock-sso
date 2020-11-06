@@ -11,8 +11,22 @@
     "test:build": "run-s build",
     "lint:fix": "prettier-eslint '**/*.js --write"
   },
-  "author": "",
+  "author": {
+    "name": "Thibaud Perrin",
+    "email": "null@null.null",
+    "url": "https://github.com/lumilock"
+  },
   "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js, jsx}": [
+      "npm run lint:fix"
+    ]
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.1",
