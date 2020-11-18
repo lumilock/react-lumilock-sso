@@ -1,7 +1,7 @@
-import React from 'react' // eslint-disable-line no-unused-vars
+import React from 'react'
 
 const Text = ({ children }) => {
-  return <div>TEXT: {children}</div>
+  return <div>TEXTY:{children}</div>
 }
 
 export default Text
