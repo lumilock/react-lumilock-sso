@@ -13,7 +13,7 @@
     "prebuild": "rimraf dist",
     "build": "rollup -c",
     "watch": "rollup -c --watch",
-    "dev": "npm run link & npm run watch",
+    "dev": "npm link & npm run watch",
     "test": "run-s test:unit test:lint test:build",
     "test:lint": "eslint src/**/*.js",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
@@ -84,7 +84,11 @@
   "peerDependencies": {
     "react": "^17.0.1",
     "prop-types": "^15.7.2",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "react-redux": "^7.2.2",
+    "redux-thunk": "^2.3.0"
   },
   "files": [
     "dist"

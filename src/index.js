@@ -1,4 +1,6 @@
 import Text from './components/text/Text'
-import Provider from './components/Provider'
+import LumilockProvider from './components/LumilockProvider'
+import ProtectedRoutes from './components/ProtectedRoutes'
+import LoginForm from './components/form/LoginForm'
 
-export { Text, Provider }
+export { Text, LumilockProvider, ProtectedRoutes, LoginForm }

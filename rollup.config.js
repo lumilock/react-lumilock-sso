@@ -68,7 +68,10 @@ export default [
         'styled-components': 'styled',
         'prop-types': 'PropTypes',
         'prop-types/checkPropTypes': 'checkPropTypes',
-        'react-cookie': 'reactCookie'
+        'react-cookie': 'reactCookie',
+        redux: 'redux',
+        'redux-thunk': 'thunk',
+        'redux-devtools-extension': 'reduxDevtoolsExtension'
       },
       format: 'umd'
     },
