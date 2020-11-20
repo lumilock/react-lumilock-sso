@@ -1,7 +1,32 @@
 import React from 'react'
 
-const FormGroup = () => {
-  return <h1>FormGroup</h1>
+const FormGroup = ({
+  classFormGroup = '',
+  classContent = '',
+  classChildren = '',
+  id,
+  label = ' Label',
+  type = 'text',
+  inputRef,
+  handleChange,
+  disabled,
+  children
+}) => {
+  return (
+    <div className={classFormGroup}>
+      <div className={classContent}>
+        <label htmlFor={id}>{label}</label>
+        <input
+          type={type}
+          id={id}
+          ref={inputRef}
+          onChange={handleChange}
+          disabled={disabled}
+        />
+      </div>
+      <div className={classChildren}>{children}</div>
+    </div>
+  )
 }
 
 export default FormGroup
