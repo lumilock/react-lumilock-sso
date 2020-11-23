@@ -15,7 +15,7 @@ const FormGroup = ({
   return (
     <div className={classFormGroup}>
       <div className={classContent}>
-        <label htmlFor={id}>{label}</label>
+        {label && <label htmlFor={id}>{label}</label>}
         <input
           type={type}
           id={id}
@@ -24,7 +24,7 @@ const FormGroup = ({
           disabled={disabled}
         />
       </div>
-      <div className={classChildren}>{children}</div>
+      {children && <div className={classChildren}>{children}</div>}
     </div>
   )
 }

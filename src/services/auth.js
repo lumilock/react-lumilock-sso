@@ -1,3 +1,5 @@
+import authHeader from './auth-header'
+
 // Base url
 const API_URL = 'http://localhost:8000/api/auth/'
 
@@ -13,11 +15,45 @@ const checkIsLogged = () => {
 }
 
 export const checkCookies = (cookies, setCookie, removeCookie) => {
-  if (!cookies.LUMILOCK_AUTH || !cookies.LUMILOCK_EXPIRES) {
+  if (!cookies.LUMILOCK_AUTH || !cookies.LUMILOCK_TOKEN) {
     removeCookie('LUMILOCK_AUTH')
-    removeCookie('LUMILOCK_EXPIRES')
+    removeCookie('LUMILOCK_TOKEN')
     return false
   } else {
     return true /** TODO */
+  }
+}
+
+export const login = async (identity, password) => {
+  try {
+    const init = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({ identity, password })
+    }
+
+    return await fetch(API_URL + 'login', init)
+      .then(function (response) {
+        if (response.status !== 200 && response.status !== 201) {
+          throw {
+            status: response.status,
+            url: response.url,
+            message: response.statusText
+          }
+        }
+        return response.json()
+      })
+      .then((data) => {
+        return { type: 'success', data }
+      })
+      .catch((error) => {
+        return { type: 'fail', ...error }
+      })
+  } catch (error) {
+    console.log('Error :', error)
+    return { type: 'fail', ...error }
   }
 }
