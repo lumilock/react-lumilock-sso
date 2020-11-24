@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react' // eslint-disable-line no-unused-vars
 import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
-// import { useCookies } from 'react-cookie'
 import { Redirect, Route } from 'react-router-dom'
 import { checkCookies } from '../services/auth'
-import { NoAuthAction } from '../store/actions/authActions'
+import { CheckAuthAction, NoAuthAction } from '../store/actions/authActions'
 import { authSelector } from '../store/selectors/authSelectors'
 
 const ProtectedRoutes = ({ component: Component, ...rest }) => {
@@ -16,10 +15,38 @@ const ProtectedRoutes = ({ component: Component, ...rest }) => {
   const [loading, setLoading] = useState(true)
   const [logged, setLogged] = useState(false)
 
-  useEffect(() => {
-    if (checkCookies(cookies, setCookie, removeCookie)) {
-    } else {
-      dispatch(NoAuthAction())
+  useEffect(async () => {
+    try {
+      if (checkCookies(cookies, removeCookie)) {
+        await dispatch(CheckAuthAction(cookies.LUMILOCK_TOKEN.token))
+          .then(({ data }) => {
+            const { token_info, user } = data
+
+            // set the expiration date time from the token to the cookie
+            const expireDate = new Date(
+              new Date().getTime() + token_info.expires_in * 1000
+            )
+
+            // set the cookies
+            setCookie('LUMILOCK_AUTH', JSON.stringify(user), {
+              path: '/',
+              expires: expireDate,
+              domain: 'localhost'
+            })
+            setCookie('LUMILOCK_TOKEN', JSON.stringify(token_info), {
+              path: '/',
+              expires: expireDate,
+              domain: 'localhost'
+            })
+          })
+          .catch((error) => {
+            console.log('reject : ', error)
+          })
+      } else {
+        dispatch(NoAuthAction())
+      }
+    } catch (error) {
+      console.log('Cookies error : ', error)
     }
   }, [])
 
