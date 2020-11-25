@@ -6,6 +6,7 @@ import { loginSelector } from '../store/selectors/authSelectors'
 const ProtectedRoutes = ({
   component: Component,
   redirect = '/login',
+  external = '',
   ...rest
 }) => {
   const { loading, logged } = useSelector(loginSelector)
@@ -20,11 +21,16 @@ const ProtectedRoutes = ({
           if (logged) {
             return <Component />
           } else {
-            return (
-              <Redirect
-                to={{ pathname: redirect, state: { from: props.location } }}
-              />
-            )
+            if (external) {
+              window.location.replace(external)
+              return null
+            } else {
+              return (
+                <Redirect
+                  to={{ pathname: redirect, state: { from: props.location } }}
+                />
+              )
+            }
           }
         }
       }}

@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 import { loginSelector } from '../store/selectors/authSelectors'
 
-const GuestRoutes = ({ component: Component, redirect = '/', ...rest }) => {
+const GuestRoutes = ({
+  component: Component,
+  redirect = '/',
+  external = '',
+  ...rest
+}) => {
   const { loading, logged } = useSelector(loginSelector)
 
   return (
@@ -16,11 +21,16 @@ const GuestRoutes = ({ component: Component, redirect = '/', ...rest }) => {
           if (!logged) {
             return <Component />
           } else {
-            return (
-              <Redirect
-                to={{ pathname: redirect, state: { from: props.location } }}
-              />
-            )
+            if (external) {
+              window.location.replace(external)
+              return null
+            } else {
+              return (
+                <Redirect
+                  to={{ pathname: redirect, state: { from: props.location } }}
+                />
+              )
+            }
           }
         }
       }}
