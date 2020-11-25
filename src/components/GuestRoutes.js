@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 import { loginSelector } from '../store/selectors/authSelectors'
 
-const ProtectedRoutes = ({
-  component: Component,
-  redirect = '/login',
-  ...rest
-}) => {
+const GuestRoutes = ({ component: Component, redirect = '/', ...rest }) => {
   const { loading, logged } = useSelector(loginSelector)
 
   return (
@@ -17,7 +13,7 @@ const ProtectedRoutes = ({
         if (loading) {
           return <h1>Loading</h1>
         } else {
-          if (logged) {
+          if (!logged) {
             return <Component />
           } else {
             return (
@@ -32,4 +28,4 @@ const ProtectedRoutes = ({
   )
 }
 
-export default ProtectedRoutes
+export default GuestRoutes

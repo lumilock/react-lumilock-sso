@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { useDispatch } from 'react-redux'
 import { loginAuthAction } from '../../store/actions/authActions'
@@ -106,8 +106,8 @@ const LoginForm = () => {
           ...errors,
           message: 'Check your information something went wrong'
         })
+        setLoading(false)
       })
-    setLoading(false)
   }, [])
 
   return (

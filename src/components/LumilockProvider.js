@@ -3,18 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CookiesProvider, useCookies } from 'react-cookie'
 import { checkCookies } from '../services/auth'
 import { CheckAuthAction, NoAuthAction } from '../store/actions/authActions'
-import {
-  authFullSelector,
-  authSelector,
-  loginSelector
-} from '../store/selectors/authSelectors'
+import { expireSelector, loginSelector } from '../store/selectors/authSelectors'
 
 const LumilockCheckAuth = ({ children }) => {
   const [cookies, setCookie, removeCookie] = useCookies()
   const dispatch = useDispatch()
   const { loading, logged } = useSelector(loginSelector)
-  const { infos, auth } = useSelector(authFullSelector)
-  let timer = null
+  const expire_in = useSelector(expireSelector)
+  const [intervalId, setIntervalId] = useState()
 
   const checkConnexion = useCallback(async () => {
     try {
@@ -61,28 +57,24 @@ const LumilockCheckAuth = ({ children }) => {
   // we start a timer if logged value change in order to check if user socket is end
   useEffect(() => {
     if (logged) {
-      clearInterval(timer)
-      const time =
-        infos.token_info.expires_in && infos.token_info.expires_in > 0
-          ? infos.token_info.expires_in * 1000
-          : 1000 // we check that the interval time exist and is superior to 0
-      timer = window.setInterval(async () => {
+      window.clearInterval(intervalId)
+      // const time = expire_in && expire_in > 0 ? expire_in * 1000 : 1000 // we check that the interval time exist and is superior to 0
+      const id = window.setInterval(async () => {
         try {
           await checkConnexion()
-          console.log(infos.token_info.expires_in)
-        } catch (error) {
-          console.log('Check Connexion error : ', error)
-        }
-      }, time)
+        } catch (error) {}
+      }, expire_in * 1000)
+      setIntervalId(id)
     } else {
-      clearInterval(timer)
+      window.clearInterval(intervalId)
     }
-  }, [loading, logged])
+    return () => window.clearInterval(intervalId)
+  }, [loading, logged, expire_in])
 
   // we clean the timer if the component is closed
   useEffect(() => {
     return () => {
-      clearInterval(timer)
+      window.clearInterval(intervalId)
     }
   }, [])
 
@@ -90,10 +82,6 @@ const LumilockCheckAuth = ({ children }) => {
 }
 
 const LumilockProvider = ({ children }) => {
-  // useEffect(() => {
-  //   console.log('here')
-  // }, [])
-
   return (
     <CookiesProvider>
       <LumilockCheckAuth>{children}</LumilockCheckAuth>
