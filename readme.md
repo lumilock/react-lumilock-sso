@@ -1,0 +1,1 @@
+add to your store : auth: authReducer
