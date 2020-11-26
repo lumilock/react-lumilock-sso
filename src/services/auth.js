@@ -1,7 +1,7 @@
 import authHeader from './auth-header'
 
 // Base url
-const API_URL = 'http://localhost:8000/api/auth/'
+const API_URL = process.env.REACT_APP_AUTH_API_URL
 
 const checkIsLogged = () => {
   // Simple POST request with a JSON body using fetch

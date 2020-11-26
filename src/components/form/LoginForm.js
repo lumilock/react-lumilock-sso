@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { loginAuthAction } from '../../store/actions/authActions'
 import FormGroup from './FormGroup'
 
@@ -36,15 +37,19 @@ const SubmitGroup = ({ disabled = '' }) => {
     />
   )
 }
-
+/**
+ *
+ * @param {*} callbackSuccess
+ */
 const LoginForm = () => {
   const formRef = useRef()
   // Value used to check if the request is being processed
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
   // cookies hook
-  const [cookies, setCookie, removeCookie] = useCookies()
+  const [cookies, setCookie] = useCookies()
   const dispatch = useDispatch()
+  const history = useHistory()
 
   // check errors in fields
   const validateForm = (identity, password) => {
@@ -99,6 +104,26 @@ const LoginForm = () => {
           expires: expireDate,
           domain: 'localhost'
         })
+
+        if (
+          cookies &&
+          cookies.LUMILOCK_REDIRECT &&
+          cookies.LUMILOCK_REDIRECT.origin &&
+          cookies.LUMILOCK_REDIRECT.pathname &&
+          Object.prototype.hasOwnProperty.call(
+            cookies.LUMILOCK_REDIRECT,
+            'external'
+          )
+        ) {
+          if (cookies.LUMILOCK_REDIRECT.external) {
+            window.location.replace(
+              cookies.LUMILOCK_REDIRECT.origin +
+                cookies.LUMILOCK_REDIRECT.pathname
+            )
+          } else {
+            history.push(cookies.LUMILOCK_REDIRECT.pathname)
+          }
+        }
       })
       .catch((error) => {
         console.log('reject : ', error)
@@ -112,15 +137,9 @@ const LoginForm = () => {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <p>thibaud.perrin</p>
-      <p>123456</p>
       <IdentityGroup />
       <PasswordGroup />
       <SubmitGroup disabled={loading ? 'disabled' : ''} />
-      <pre>{JSON.stringify(errors)}</pre>
-      <pre>{JSON.stringify(cookies.LUMILOCK_AUTH)}</pre>
-      <pre>{JSON.stringify(cookies.LUMILOCK_TOKEN)}</pre>
-      <pre>{cookies.LUMILOCK_TOKEN && cookies.LUMILOCK_TOKEN.token}</pre>
     </form>
   )
 }

@@ -12,6 +12,12 @@ const LumilockCheckAuth = ({ children }) => {
   const expire_in = useSelector(expireSelector)
   const [intervalId, setIntervalId] = useState()
 
+  useEffect(() => {
+    if (cookies && cookies.LUMILOCK_REDIRECT) {
+      console.log('provider said = ', cookies.LUMILOCK_REDIRECT)
+    }
+  }, [cookies])
+
   const checkConnexion = useCallback(async () => {
     try {
       if (checkCookies(cookies, removeCookie)) {
@@ -82,6 +88,7 @@ const LumilockCheckAuth = ({ children }) => {
 }
 
 const LumilockProvider = ({ children }) => {
+  // todo add props for process.env.REACT_APP_AUTH_API_URL in a context
   return (
     <CookiesProvider>
       <LumilockCheckAuth>{children}</LumilockCheckAuth>
