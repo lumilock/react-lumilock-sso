@@ -180,6 +180,22 @@ function App() {
   );
 }
 ```
+The last thing to do is create a login page.
+#### `file : ./src/pages/Login.jsx`
+```jsx
+...
+import { LoginForm } from 'react-lumilock-sso'
+...
+const Login = () => {
+  return <div>
+      <h1>Login</h1>
+      <LoginForm />
+    </div>
+}
+export default Login
+```
+
+
 #### Conclusion
 We saw how to set up an sso system between two React projects, putting the login page on only one of the two projects. Obviously it is possible to put connection pages on each of your projects, in order to avoid reloading your applications during redirects
 
