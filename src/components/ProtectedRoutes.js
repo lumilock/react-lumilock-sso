@@ -1,33 +1,38 @@
 import React, { useEffect, useState } from 'react' // eslint-disable-line no-unused-vars
 import { useCookies } from 'react-cookie'
-import { useDispatch, useSelector } from 'react-redux'
-// import { useCookies } from 'react-cookie'
-import { Redirect, Route } from 'react-router-dom'
-import { checkCookies } from '../services/auth'
-import { NoAuthAction } from '../store/actions/authActions'
-import { authSelector } from '../store/selectors/authSelectors'
+import { useSelector } from 'react-redux'
+import { Redirect, Route, useLocation } from 'react-router-dom'
+import { loginSelector } from '../store/selectors/authSelectors'
 
-const ProtectedRoutes = ({ component: Component, ...rest }) => {
-  const [cookies, setCookie, removeCookie] = useCookies()
-
-  const dispatch = useDispatch()
-  const { infos, auth } = useSelector(authSelector)
-
-  const [loading, setLoading] = useState(true)
-  const [logged, setLogged] = useState(false)
+const ProtectedRoutes = ({
+  component: Component,
+  redirect = '/login',
+  external = '',
+  ...rest
+}) => {
+  const { loading, logged } = useSelector(loginSelector)
+  const location = useLocation()
+  const [cookies, setCookie] = useCookies()
 
   useEffect(() => {
-    if (checkCookies(cookies, setCookie, removeCookie)) {
-    } else {
-      dispatch(NoAuthAction())
+    // set the cookies
+    if (!logged) {
+      console.log(new Date(new Date().getTime() + 1 * 60000)) // one minutes * 60000 = millisecondes
+      setCookie(
+        'LUMILOCK_REDIRECT',
+        JSON.stringify({
+          origin: window.location.origin,
+          pathname: location.pathname,
+          external: external !== ''
+        }),
+        {
+          path: '/',
+          expires: new Date(new Date().getTime() + 1 * 60000), // one minutes * 60000 = millisecondes
+          domain: process.env.REACT_APP_AUTH_DOMAIN
+        }
+      )
     }
-  }, [])
-
-  // function that looks if auth store change
-  useEffect(() => {
-    setLoading(auth.loading)
-    setLogged(auth.logged)
-  }, [auth.loading, auth.logged])
+  }, [logged])
 
   return (
     <Route
@@ -39,11 +44,16 @@ const ProtectedRoutes = ({ component: Component, ...rest }) => {
           if (logged) {
             return <Component />
           } else {
-            return (
-              <Redirect
-                to={{ pathname: '/login', state: { from: props.location } }}
-              />
-            )
+            if (external) {
+              window.location.replace(external)
+              return null
+            } else {
+              return (
+                <Redirect
+                  to={{ pathname: redirect, state: { from: props.location } }}
+                />
+              )
+            }
           }
         }
       }}
