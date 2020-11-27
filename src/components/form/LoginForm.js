@@ -97,12 +97,12 @@ const LoginForm = () => {
         setCookie('LUMILOCK_AUTH', JSON.stringify(user), {
           path: '/',
           expires: expireDate,
-          domain: 'localhost'
+          domain: process.env.REACT_APP_AUTH_DOMAIN
         })
         setCookie('LUMILOCK_TOKEN', JSON.stringify(token_info), {
           path: '/',
           expires: expireDate,
-          domain: 'localhost'
+          domain: process.env.REACT_APP_AUTH_DOMAIN
         })
 
         if (

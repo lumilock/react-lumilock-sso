@@ -70,6 +70,11 @@ const store = createStore(
   ...
 )
 ```
+## Environment variable
+```.env
+REACT_APP_AUTH_API_URL = 'http://your/login/api/'
+REACT_APP_AUTH_DOMAIN = 'localhost' // (string): domain for the cookie (sub.domain.com or .allsubdomains.com)
+```
 
 ## 🚀 Simple Example 
 In this example we do not detail the creation of a react application, or the integration of dotenv, redux and react-router-dom packages.  

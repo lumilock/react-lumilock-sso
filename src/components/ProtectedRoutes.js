@@ -28,7 +28,7 @@ const ProtectedRoutes = ({
         {
           path: '/',
           expires: new Date(new Date().getTime() + 1 * 60000), // one minutes * 60000 = millisecondes
-          domain: 'localhost'
+          domain: process.env.REACT_APP_AUTH_DOMAIN
         }
       )
     }
