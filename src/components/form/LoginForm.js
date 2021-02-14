@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { loginAuthAction } from '../../store/actions/authActions'
 import FormGroup from './FormGroup'
 
@@ -49,7 +48,6 @@ const LoginForm = () => {
   // cookies hook
   const [cookies, setCookie] = useCookies()
   const dispatch = useDispatch()
-  const history = useHistory()
 
   // check errors in fields
   const validateForm = (identity, password) => {
@@ -104,26 +102,6 @@ const LoginForm = () => {
           expires: expireDate,
           domain: process.env.REACT_APP_AUTH_DOMAIN
         })
-
-        if (
-          cookies &&
-          cookies.LUMILOCK_REDIRECT &&
-          cookies.LUMILOCK_REDIRECT.origin &&
-          cookies.LUMILOCK_REDIRECT.pathname &&
-          Object.prototype.hasOwnProperty.call(
-            cookies.LUMILOCK_REDIRECT,
-            'external'
-          )
-        ) {
-          if (cookies.LUMILOCK_REDIRECT.external) {
-            window.location.replace(
-              cookies.LUMILOCK_REDIRECT.origin +
-                cookies.LUMILOCK_REDIRECT.pathname
-            )
-          } else {
-            history.push(cookies.LUMILOCK_REDIRECT.pathname)
-          }
-        }
       })
       .catch((error) => {
         console.log('reject : ', error)

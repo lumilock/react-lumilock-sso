@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react' // eslint-disable-line no-unused-vars
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CookiesProvider, useCookies } from 'react-cookie'
 import { checkCookies } from '../services/auth'
@@ -12,11 +12,11 @@ const LumilockCheckAuth = ({ children }) => {
   const expire_in = useSelector(expireSelector)
   const [intervalId, setIntervalId] = useState()
 
-  useEffect(() => {
-    if (cookies && cookies.LUMILOCK_REDIRECT) {
-      console.log('provider said = ', cookies.LUMILOCK_REDIRECT)
-    }
-  }, [cookies])
+  // useEffect(() => {
+  //   if (cookies && cookies.LUMILOCK_REDIRECT) {
+  //     console.log('provider said = ', cookies.LUMILOCK_REDIRECT)
+  //   }
+  // }, [cookies])
 
   const checkConnexion = useCallback(async () => {
     try {
@@ -82,7 +82,7 @@ const LumilockCheckAuth = ({ children }) => {
     return () => {
       window.clearInterval(intervalId)
     }
-  }, [])
+  }, [intervalId])
 
   return <>{children}</>
 }

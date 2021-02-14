@@ -1,8 +1,26 @@
-import React, { useEffect, useState } from 'react' // eslint-disable-line no-unused-vars
-import { useCookies } from 'react-cookie'
+import React, { useCallback, useEffect } from 'react'
+// import { useCookies } from 'react-cookie'
 import { useSelector } from 'react-redux'
-import { Redirect, Route, useLocation } from 'react-router-dom'
+import { Redirect, Route, useHistory } from 'react-router-dom'
 import { loginSelector } from '../store/selectors/authSelectors'
+
+const CheckRedirection = ({ redirect = '/', external = '', location }) => {
+  const history = useHistory()
+
+  const checkRedirectSource = useCallback(async () => {
+    if (external) {
+      await window.location.replace(external + '?from=' + window.location.href)
+    } else {
+      await history.push({ pathname: redirect, state: { from: location } })
+    }
+  }, [history, redirect, external, location])
+
+  useEffect(() => {
+    checkRedirectSource()
+  }, [checkRedirectSource])
+
+  return <h1>Loading ...</h1>
+}
 
 const ProtectedRoutes = ({
   component: Component,
@@ -11,28 +29,19 @@ const ProtectedRoutes = ({
   ...rest
 }) => {
   const { loading, logged } = useSelector(loginSelector)
-  const location = useLocation()
-  const [cookies, setCookie] = useCookies()
 
-  useEffect(() => {
-    // set the cookies
-    if (!logged) {
-      console.log(new Date(new Date().getTime() + 1 * 60000)) // one minutes * 60000 = millisecondes
-      setCookie(
-        'LUMILOCK_REDIRECT',
-        JSON.stringify({
-          origin: window.location.origin,
-          pathname: location.pathname,
-          external: external !== ''
-        }),
-        {
-          path: '/',
-          expires: new Date(new Date().getTime() + 1 * 60000), // one minutes * 60000 = millisecondes
-          domain: process.env.REACT_APP_AUTH_DOMAIN
-        }
-      )
-    }
-  }, [logged])
+  // Function to redirect user to an external website that contain our login page
+  const externalRedirect = useCallback(() => {
+    window.location.replace(external + '?from=' + window.location.href)
+  }, [external])
+
+  // Function to redirect user to an internal login page
+  const internalRedirect = useCallback(
+    (location) => {
+      return <Redirect to={{ pathname: redirect, state: { from: location } }} />
+    },
+    [redirect]
+  )
 
   return (
     <Route
@@ -44,16 +53,13 @@ const ProtectedRoutes = ({
           if (logged) {
             return <Component />
           } else {
-            if (external) {
-              window.location.replace(external)
-              return null
-            } else {
-              return (
-                <Redirect
-                  to={{ pathname: redirect, state: { from: props.location } }}
-                />
-              )
-            }
+            return (
+              <CheckRedirection
+                redirect={redirect}
+                external={external}
+                location={props.location}
+              />
+            )
           }
         }
       }}
