@@ -40,7 +40,7 @@ const SubmitGroup = ({ disabled = '' }) => {
  *
  * @param {*} callbackSuccess
  */
-const LoginForm = () => {
+const LoginForm = ({ Identity, Password, Submit }) => {
   const formRef = useRef()
   // Value used to check if the request is being processed
   const [loading, setLoading] = useState(false)
@@ -115,9 +115,12 @@ const LoginForm = () => {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <IdentityGroup />
+      <Identity />
+      <Password />
+      <Submit disabled={!!loading} />
+      {/* <IdentityGroup />
       <PasswordGroup />
-      <SubmitGroup disabled={loading ? 'disabled' : ''} />
+      <SubmitGroup disabled={loading ? 'disabled' : ''} /> */}
     </form>
   )
 }
