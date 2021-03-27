@@ -1,75 +1,64 @@
-import React, { useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { Redirect, Route, useHistory } from 'react-router-dom'
+/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, react/jsx-filename-extension */
+import React, { useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, useHistory } from 'react-router-dom';
 
-import qs from 'qs'
+import qs from 'qs';
 
-import { loginSelector } from '../store/selectors/authSelectors'
+import { loginSelector } from '../store/selectors/authSelectors';
 
 const CheckRedirection = ({ redirect = '/', external = '', location }) => {
-  const history = useHistory()
+  const history = useHistory();
 
   // Function that check if there is a source where we need to redirect
   const checkRedirectSource = useCallback(async () => {
     const fromSearch = qs.parse(history?.location?.search, {
-      ignoreQueryPrefix: true
-    }).from
+      ignoreQueryPrefix: true,
+    }).from;
     // we check if in the location state there is a state 'from' to now where we need to localy redirect
-    const fromState = history?.location?.state?.from
+    const fromState = history?.location?.state?.from;
     if (fromSearch) {
-      await window.location.replace(fromSearch)
-      return
-    } else {
-      if (fromState) {
-        await history.push({ pathname: fromSearch, state: { from: undefined } })
-        return
-      }
+      window.location.replace(fromSearch);
+      return;
+    }
+    if (fromState) {
+      history.push({ pathname: fromSearch, state: { from: undefined } });
+      return;
     }
 
     if (external) {
-      await window.location.replace(external)
+      window.location.replace(external);
     } else {
-      await history.push({ pathname: redirect, state: { from: location } })
+      history.push({ pathname: redirect, state: { from: location } });
     }
-  }, [history, redirect, external, location])
+  }, [history, redirect, external, location]);
 
   useEffect(() => {
-    checkRedirectSource()
-  }, [])
+    checkRedirectSource();
+  }, [checkRedirectSource]);
 
-  return <h1>Loading...</h1>
-}
+  return <h1>Loading...</h1>;
+};
 
 const GuestRoutes = ({
-  component: Component,
-  redirect = '/',
-  external = '',
-  ...rest
+  component: Component, redirect = '/', external = '', ...rest
 }) => {
-  const { loading, logged } = useSelector(loginSelector)
+  const { loading, logged } = useSelector(loginSelector);
 
   return (
     <Route
       {...rest}
       render={(props) => {
         if (loading) {
-          return <h1>Loading</h1>
-        } else {
-          if (!logged) {
-            return <Component />
-          } else {
-            return (
-              <CheckRedirection
-                redirect={redirect}
-                external={external}
-                location={props.location}
-              />
-            )
-          }
+          return <h1>Loading</h1>;
         }
+        if (!logged) {
+          return <Component />;
+        }
+        return <CheckRedirection redirect={redirect} external={external} location={props.location} />;
       }}
     />
-  )
-}
+  );
+};
 
-export default GuestRoutes
+export default GuestRoutes;

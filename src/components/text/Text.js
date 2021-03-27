@@ -1,7 +1,10 @@
-import React from 'react'
+// import React from 'react';
 
-const Text = ({ children }) => {
-  return <div>TEXTY:{children}</div>
-}
+// const Text = ({ children }) => (
+//   <div>
+//     TEXTY:
+//     {children}
+//   </div>
+// );
 
-export default Text
+// export default Text;

@@ -1,16 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { CookiesProvider, useCookies } from 'react-cookie'
-import { checkCookies } from '../services/auth'
-import { CheckAuthAction, NoAuthAction } from '../store/actions/authActions'
-import { expireSelector, loginSelector } from '../store/selectors/authSelectors'
+/* eslint-disable import/no-unresolved */
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CookiesProvider, useCookies } from 'react-cookie';
+
+import { checkCookies } from '../services/auth';
+
+import { CheckAuthAction, NoAuthAction } from '../store/actions/authActions';
+import { expireSelector, loginSelector } from '../store/selectors/authSelectors';
 
 const LumilockCheckAuth = ({ children }) => {
-  const [cookies, setCookie, removeCookie] = useCookies()
-  const dispatch = useDispatch()
-  const { loading, logged } = useSelector(loginSelector)
-  const expire_in = useSelector(expireSelector)
-  const [intervalId, setIntervalId] = useState()
+  // Cookie
+  const [cookies, setCookie, removeCookie] = useCookies();
+  // Dispatch
+  const dispatch = useDispatch();
+  // Selector
+  const { loading, logged } = useSelector(loginSelector);
+  const expireIn = useSelector(expireSelector);
+  // States
+  const [intervalId, setIntervalId] = useState();
 
   // useEffect(() => {
   //   if (cookies && cookies.LUMILOCK_REDIRECT) {
@@ -23,77 +30,88 @@ const LumilockCheckAuth = ({ children }) => {
       if (checkCookies(cookies, removeCookie)) {
         await dispatch(CheckAuthAction(cookies.LUMILOCK_TOKEN.token))
           .then(({ data }) => {
-            const { token_info, user } = data
-
+            const { tokenInfo, user } = data;
             // set the expiration date time from the token to the cookie
-            const expireDate = new Date(
-              new Date().getTime() + token_info.expires_in * 1000
-            )
+            const expireDate = new Date(new Date().getTime() + tokenInfo.expires_in * 1000);
             // set the cookies
             setCookie('LUMILOCK_AUTH', JSON.stringify(user), {
               path: '/',
               expires: expireDate,
-              domain: 'localhost'
-            })
-            setCookie('LUMILOCK_TOKEN', JSON.stringify(token_info), {
+              domain: 'localhost', // TODO domain localhost ...
+            });
+            setCookie('LUMILOCK_TOKEN', JSON.stringify(tokenInfo), {
               path: '/',
               expires: expireDate,
-              domain: 'localhost'
-            })
+              domain: 'localhost', // TODO domain localhost ...
+            });
           })
           .catch((error) => {
-            console.log('reject : ', error)
-          })
+            // eslint-disable-next-line no-console
+            console.error('reject 11: ', error);
+          });
       } else {
-        dispatch(NoAuthAction())
+        dispatch(NoAuthAction());
       }
     } catch (error) {
-      console.log('Cookies error : ', error)
+      // eslint-disable-next-line no-console
+      console.error('Cookies error : ', error);
     }
-  }, [cookies])
+  }, [cookies, dispatch, removeCookie, setCookie]);
 
-  useEffect(async () => {
-    try {
-      await checkConnexion()
-    } catch (error) {
-      console.log('Check Connexion error : ', error)
-    }
-  }, [])
+  /**
+   * Call the function checkConnexion at the mounted state of the current component
+   */
+  useEffect(() => {
+    const checkCo = async () => {
+      try {
+        await checkConnexion();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Check Connexion error : ', error);
+      }
+    };
+    checkCo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only at the mounted not when checkConnexion update
 
   // we start a timer if logged value change in order to check if user socket is end
   useEffect(() => {
     if (logged) {
-      window.clearInterval(intervalId)
-      // const time = expire_in && expire_in > 0 ? expire_in * 1000 : 1000 // we check that the interval time exist and is superior to 0
+      // const time = expireIn && expireIn > 0 ? expireIn * 1000 : 1000 // we check that the interval time exist and is superior to 0
       const id = window.setInterval(async () => {
         try {
-          await checkConnexion()
+          await checkConnexion();
         } catch (error) {}
-      }, expire_in * 1000)
-      setIntervalId(id)
-    } else {
-      window.clearInterval(intervalId)
+      }, expireIn * 1000);
+      setIntervalId((old) => {
+        window.clearInterval(old);
+        return id;
+      });
     }
-    return () => window.clearInterval(intervalId)
-  }, [loading, logged, expire_in])
+  }, [loading, logged, expireIn, checkConnexion]);
 
   // we clean the timer if the component is closed
+  useEffect(
+    () => () => {
+      window.clearInterval(intervalId);
+    },
+    [intervalId],
+  );
   useEffect(() => {
-    return () => {
-      window.clearInterval(intervalId)
+    if (!logged) {
+      window.clearInterval(intervalId);
     }
-  }, [intervalId])
+  }, [intervalId, logged]);
 
-  return <>{children}</>
-}
+  // eslint-disable-next-line react/jsx-filename-extension
+  return <>{children}</>;
+};
 
-const LumilockProvider = ({ children }) => {
+const LumilockProvider = ({ children }) => (
   // todo add props for process.env.REACT_APP_AUTH_API_URL in a context
-  return (
-    <CookiesProvider>
-      <LumilockCheckAuth>{children}</LumilockCheckAuth>
-    </CookiesProvider>
-  )
-}
+  <CookiesProvider>
+    <LumilockCheckAuth>{children}</LumilockCheckAuth>
+  </CookiesProvider>
+);
 
-export default LumilockProvider
+export default LumilockProvider;
