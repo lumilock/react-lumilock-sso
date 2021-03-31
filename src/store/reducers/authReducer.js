@@ -11,6 +11,8 @@ export const LOGIN_AUTH_SUCCESS = 'LOGIN_AUTH_SUCCESS';
 export const LOGIN_AUTH_FAIL = 'LOGIN_AUTH_FAIL';
 export const DELETE_AUTH_ACTION = 'DELETE_AUTH_ACTION';
 export const NO_AUTH_ACTION = 'NO_AUTH_ACTION';
+export const LOGOUT_AUTH_FAIL = 'LOGOUT_AUTH_FAIL';
+export const LOGOUT_AUTH_SUCCESS = 'LOGOUT_AUTH_SUCCESS';
 
 export default function authReducer(state = initialState, action) {
   switch (action.type) {
@@ -28,6 +30,16 @@ export default function authReducer(state = initialState, action) {
     case LOGIN_AUTH_FAIL:
       return {
         infos: {},
+        auth: {
+          loading: false,
+          logged: false,
+        },
+      };
+    case LOGOUT_AUTH_FAIL:
+      return state;
+    case LOGOUT_AUTH_SUCCESS:
+      return {
+        ...initialState,
         auth: {
           loading: false,
           logged: false,

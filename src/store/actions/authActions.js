@@ -1,8 +1,8 @@
 import {
-  ADD_AUTH_ACTION, DELETE_AUTH_ACTION, NO_AUTH_ACTION, LOGIN_AUTH_SUCCESS, LOGIN_AUTH_FAIL,
+  ADD_AUTH_ACTION, DELETE_AUTH_ACTION, NO_AUTH_ACTION, LOGIN_AUTH_SUCCESS, LOGIN_AUTH_FAIL, LOGOUT_AUTH_SUCCESS, LOGOUT_AUTH_FAIL,
 } from '../reducers/authReducer';
 
-import { login as AuthService, checkAuth } from '../../services/auth';
+import { login as AuthService, checkAuth, logout as AuthLogoutService } from '../../services/auth';
 
 export const addAuthAction = (auth) => ({
   type: ADD_AUTH_ACTION,
@@ -109,6 +109,45 @@ export const loginAuthAction = (identity, password) => (dispatch) => AuthService
     // remove data from localStorage
     localStorage.removeItem('tokenInfo');
     localStorage.removeItem('user');
+    return Promise.reject();
+  },
+);
+
+export const logoutAuthAction = () => (dispatch) => AuthLogoutService().then(
+  (response) => {
+    // check the response of the service
+    if (response.type === 'fail') {
+      dispatch({
+        type: LOGOUT_AUTH_FAIL,
+      });
+      // throw the error
+      return Promise.reject();
+    }
+    if (response.type === 'success') {
+      dispatch({
+        type: LOGOUT_AUTH_SUCCESS,
+      });
+      // remove data from localStorage
+      localStorage.removeItem('tokenInfo');
+      localStorage.removeItem('user');
+      document.cookie = 'LUMILOCK_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = 'LUMILOCK_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      return Promise.resolve({ ...response.data });
+    }
+    // we update the state
+    dispatch({
+      type: LOGOUT_AUTH_FAIL,
+    });
+    return Promise.reject();
+  },
+  (error) => {
+    // If an error occurs during the registration
+    // eslint-disable-next-line no-console
+    console.error('logoutAuthAction error : ', error);
+    // we update the state
+    dispatch({
+      type: LOGOUT_AUTH_FAIL,
+    });
     return Promise.reject();
   },
 );

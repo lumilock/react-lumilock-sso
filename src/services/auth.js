@@ -99,3 +99,34 @@ export const login = async (identity, password) => {
     return { type: 'fail', ...error };
   }
 };
+
+export const logout = async () => {
+  try {
+    const init = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...authHeader(),
+      },
+    };
+
+    return await fetch(`${API_URL}logout`, init)
+      .then((response) => {
+        if (response.status !== 200 && response.status !== 201) {
+          throw new Error({
+            status: response.status,
+            url: response.url,
+            message: response.statusText,
+          });
+        }
+        return response.json();
+      })
+      .then((data) => ({ type: 'success', data }))
+      .catch((error) => ({ type: 'fail', ...error }));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error :', error);
+    return { type: 'fail', ...error };
+  }
+};
