@@ -46,7 +46,13 @@ export default function authReducer(state = initialState, action) {
         },
       };
     case DELETE_AUTH_ACTION:
-      return initialState;
+      return {
+        ...initialState,
+        auth: {
+          loading: false,
+          logged: false,
+        },
+      };
     case NO_AUTH_ACTION:
       return { ...initialState, auth: { loading: false, logged: false } };
     default:

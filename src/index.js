@@ -8,8 +8,8 @@ import {
   authFullSelector, authSelector, expireSelector, loginSelector,
 } from './store/selectors/authSelectors';
 
-import { logoutAuthAction } from './store/actions/authActions';
+import { logoutAuthAction, deleteAuthAction } from './store/actions/authActions';
 
 export {
-  LumilockProvider, ProtectedRoutes, GuestRoutes, LoginForm, authReducer, authFullSelector, authSelector, expireSelector, loginSelector, logoutAuthAction,
+  LumilockProvider, ProtectedRoutes, GuestRoutes, LoginForm, authReducer, authFullSelector, authSelector, expireSelector, loginSelector, logoutAuthAction, deleteAuthAction,
 };

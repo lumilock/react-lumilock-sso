@@ -152,9 +152,21 @@ export const logoutAuthAction = () => (dispatch) => AuthLogoutService().then(
   },
 );
 
-export const deleteAuthAction = () => ({
-  type: DELETE_AUTH_ACTION,
-});
+export const deleteAuthAction = () => (dispatch) => {
+  try {
+    dispatch({
+      type: DELETE_AUTH_ACTION,
+    });
+    // remove data from localStorage
+    localStorage.removeItem('tokenInfo');
+    localStorage.removeItem('user');
+    document.cookie = 'LUMILOCK_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'LUMILOCK_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    return Promise.resolve('SUCCESS');
+  } catch (e) {
+    return Promise.reject();
+  }
+};
 
 export const NoAuthAction = () => (dispatch) => {
   dispatch({
