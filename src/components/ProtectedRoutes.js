@@ -48,7 +48,7 @@ const ProtectedRoutes = ({
           return <h1>Loading</h1>;
         }
         if (logged) {
-          return <Component />;
+          return <Component {...props} />;
         }
         return <CheckRedirection redirect={redirect} external={external} location={props.location} />;
       }}
