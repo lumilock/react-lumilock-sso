@@ -17,6 +17,17 @@ export const authSelector = ({ auth }) => {
   };
 };
 
+/**
+ * return data usefull for the profile info in the nav
+ */
+export const profileSelector = ({ auth }) => {
+  const { infos } = auth; // we isolate info
+  return {
+    fullName: `${infos.user.first_name} ${infos.user.last_name}` ?? '',
+    picture: infos.user.picture ?? '',
+  };
+};
+
 export const expireSelector = ({ auth }) => {
   const { infos, auth: newAuth } = auth; // we isolate info
   if (infos && newAuth) {
