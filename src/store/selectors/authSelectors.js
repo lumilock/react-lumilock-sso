@@ -33,7 +33,7 @@ export const expireSelector = ({ auth }) => {
   if (infos && newAuth) {
     const { tokenInfo } = infos; // we isolate tokenInfo
     if (tokenInfo) {
-      const { expires_in: expiresIn } = tokenInfo; // we isolate expires_in (it is our goal, because we don't want this value)
+      const { expires_in: expiresIn } = tokenInfo; // we get expires_in
       return expiresIn;
     }
   }

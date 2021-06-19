@@ -1,4 +1,3 @@
-// import Text from './components/text/Text';
 import LumilockProvider from './components/LumilockProvider';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import GuestRoutes from './components/GuestRoutes';

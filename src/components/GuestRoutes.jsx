@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, react/jsx-filename-extension */
 import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, useHistory } from 'react-router-dom';
@@ -7,6 +6,12 @@ import qs from 'qs';
 
 import { loginSelector } from '../store/selectors/authSelectors';
 
+/**
+ * Component that manage the redirection
+ * @param {string} redirect The route in the current app where we want to be redirect if we are not authorize to access it (if not external)
+ * @param {string} external The external route (on another domaine) where we want to be redirect if we are not authorize to access it
+ * @returns JSX
+ */
 const CheckRedirection = ({ redirect = '/', external = '', location }) => {
   const history = useHistory();
 
@@ -40,6 +45,13 @@ const CheckRedirection = ({ redirect = '/', external = '', location }) => {
   return <h1>Loading...</h1>;
 };
 
+/**
+ * Component that manage the Guest routes (only accessible for guest users)
+ * @param {Component} component That component accessible by this route
+ * @param {string} redirect The route in the current app where we want to be redirect if we are not authorize to access it (if not external)
+ * @param {string} external The external route (on another domaine) where we want to be redirect if we are not authorize to access it
+ * @returns JSX
+ */
 const GuestRoutes = ({
   component: Component, redirect = '/', external = '', ...rest
 }) => {

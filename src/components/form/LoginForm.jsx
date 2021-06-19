@@ -1,19 +1,19 @@
-/* eslint-disable react/jsx-filename-extension */
-// eslint-disable-next-line import/no-unresolved
 import React, { useCallback, useRef, useState } from 'react';
-// eslint-disable-next-line import/no-unresolved
 import { useDispatch } from 'react-redux';
 import { useCookies } from 'react-cookie';
 
 import { loginAuthAction } from '../../store/actions/authActions';
 
 /**
- *
- * @param {*} callbackSuccess
+ * Component that manage the login form
+ * @param {func} renderForm function that get 4 params
+ *  - message : {string} a succes or error message to give a feedback to the user
+ *  - identity : {array} an array of messages that concerne the field identity
+ *  - password : {array} an array of messages that concerne the field password
+ *  - loading : {bool} a boolean to indicate if we are connecting
+ * @returns JSX
  */
-const LoginForm = ({
-  Message, Identity, Password, Submit,
-}) => {
+const LoginForm = ({ renderForm }) => {
   const formRef = useRef();
   // Value used to check if the request is being processed
   const [loading, setLoading] = useState(false);
@@ -36,6 +36,10 @@ const LoginForm = ({
     return localErrors;
   }, []);
 
+  /**
+   * Function that login the user
+   * store in redux and cookies the auth infos after login in
+   */
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -78,9 +82,7 @@ const LoginForm = ({
             domain: process.env.REACT_APP_AUTH_DOMAIN,
           });
         })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error('reject 22: ', error);
+        .catch(() => {
           setErrors((old) => ({
             ...old,
             message: 'Check your information something went wrong',
@@ -93,13 +95,7 @@ const LoginForm = ({
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <Message error={errors.message ?? ''} />
-      <Identity error={errors.identity?.length > 0 ? errors.identity[0] : ''} />
-      <Password error={errors.password?.length > 0 ? errors.password[0] : ''} />
-      <Submit disabled={!!loading} />
-      {/* <IdentityGroup />
-      <PasswordGroup />
-      <SubmitGroup disabled={loading ? 'disabled' : ''} /> */}
+      {renderForm(errors.message, errors.identity, errors.password, loading)}
     </form>
   );
 };

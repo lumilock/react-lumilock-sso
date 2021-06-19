@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved, react/jsx-filename-extension */
 import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -6,6 +5,12 @@ import { Route, useHistory } from 'react-router-dom';
 
 import { loginSelector } from '../store/selectors/authSelectors';
 
+/**
+ * Component that manage the redirection
+ * @param {string} redirect The route in the current app where we want to be redirect if we are not authorize to access it (if not external)
+ * @param {string} external The external route (on another domaine) where we want to be redirect if we are not authorize to access it
+ * @returns JSX
+ */
 const CheckRedirection = ({ redirect = '/', external = '', location }) => {
   const history = useHistory();
 
@@ -24,21 +29,17 @@ const CheckRedirection = ({ redirect = '/', external = '', location }) => {
   return <h1>Loading ...</h1>;
 };
 
+/**
+ * Component that manage the Protected routes (only accessible for auth users)
+ * @param {Component} component That component accessible by this route
+ * @param {string} redirect The route in the current app where we want to be redirect if we are not authorize to access it (if not external)
+ * @param {string} external The external route (on another domaine) where we want to be redirect if we are not authorize to access it
+ * @returns JSX
+ */
 const ProtectedRoutes = ({
   component: Component, redirect = '/login', external = '', ...rest
 }) => {
   const { loading, logged } = useSelector(loginSelector);
-
-  // Function to redirect user to an external website that contain our login page
-  // const externalRedirect = useCallback(() => {
-  //   window.location.replace(`${external}?from=${window.location.href}`);
-  // }, [external]);
-
-  // // Function to redirect user to an internal login page
-  // const internalRedirect = useCallback(
-  //   (location) => <Redirect to={{ pathname: redirect, state: { from: location } }} />,
-  //   [redirect],
-  // );
 
   return (
     <Route

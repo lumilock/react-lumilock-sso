@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CookiesProvider, useCookies } from 'react-cookie';
@@ -19,12 +18,6 @@ const LumilockCheckAuth = ({ children }) => {
   // States
   const [intervalId, setIntervalId] = useState();
 
-  // useEffect(() => {
-  //   if (cookies && cookies.LUMILOCK_REDIRECT) {
-  //     console.log('provider said = ', cookies.LUMILOCK_REDIRECT)
-  //   }
-  // }, [cookies])
-
   const checkConnexion = useCallback(async () => {
     try {
       if (checkCookies(cookies, removeCookie)) {
@@ -37,17 +30,17 @@ const LumilockCheckAuth = ({ children }) => {
             setCookie('LUMILOCK_AUTH', JSON.stringify(user), {
               path: '/',
               expires: expireDate,
-              domain: 'localhost', // TODO domain localhost ...
+              domain: process.env.REACT_APP_AUTH_DOMAIN,
             });
             setCookie('LUMILOCK_TOKEN', JSON.stringify(tokenInfo), {
               path: '/',
               expires: expireDate,
-              domain: 'localhost', // TODO domain localhost ...
+              domain: process.env.REACT_APP_AUTH_DOMAIN,
             });
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
-            console.error('reject 11: ', error);
+            console.error('reject : ', error);
           });
       } else {
         dispatch(NoAuthAction());
@@ -103,12 +96,11 @@ const LumilockCheckAuth = ({ children }) => {
     }
   }, [intervalId, logged]);
 
-  // eslint-disable-next-line react/jsx-filename-extension
   return <>{children}</>;
 };
 
 const LumilockProvider = ({ children }) => (
-  // todo add props for process.env.REACT_APP_AUTH_API_URL in a context
+  // ? todo add props for process.env.REACT_APP_AUTH_API_URL in a context
   <CookiesProvider>
     <LumilockCheckAuth>{children}</LumilockCheckAuth>
   </CookiesProvider>
