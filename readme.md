@@ -11,10 +11,11 @@ This is the liste of peer dependances :
 - redux
 - react-redux
 - redux-thunk  
+- react-cookie
 
 You can install them all with the following command :
 ```
-npm install react prop-types styled-components react-router-dom redux react-redux redux-thunk
+npm install react prop-types styled-components react-router-dom redux react-redux redux-thunk react-cookie
 ```
 
 After that you can install react-lumilock-sso
