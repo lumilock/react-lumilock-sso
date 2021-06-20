@@ -279,7 +279,7 @@ export default Login
 We saw how to set up an sso system between two React projects, putting the login page on only one of the two projects. Obviously it is possible to put connection pages on each of your projects, in order to avoid reloading your applications during redirects
 
 ## 📅 soon
-- [ ] add permissions
+- [X] add permissions
 
 ## 📰 Change log
 
