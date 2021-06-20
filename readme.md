@@ -11,10 +11,11 @@ This is the liste of peer dependances :
 - redux
 - react-redux
 - redux-thunk  
+- react-cookie
 
 You can install them all with the following command :
 ```
-npm install react prop-types styled-components react-router-dom redux react-redux redux-thunk
+npm install react prop-types styled-components react-router-dom redux react-redux redux-thunk react-cookie
 ```
 
 After that you can install react-lumilock-sso
@@ -279,7 +280,7 @@ export default Login
 We saw how to set up an sso system between two React projects, putting the login page on only one of the two projects. Obviously it is possible to put connection pages on each of your projects, in order to avoid reloading your applications during redirects
 
 ## 📅 soon
-- [ ] add permissions
+- [X] add permissions
 
 ## 📰 Change log
 
