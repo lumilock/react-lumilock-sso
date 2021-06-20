@@ -37,10 +37,16 @@ Accessible Route only by authenticated users
 ```
 ### props
 This component takes the same props as the `Route` component of `react-router-dom` except that he accepts two more props `redirect` and `external`.
-#### `redirect`
+#### `redirect` (optional)
 Use the `Redirect`component of `react-router-dom` to redirect an unauthenticated user to a location of your choice inside your app.
-#### `external`
+#### `external` (optional)
 Redirect an unauthenticated user to a location of your choice outside of your app if your login page is centralized for multiple apps.
+#### `permission` (optional)
+An array of two strings :
+1. The service unique path
+2. The permission name (there are no multiple permissions with the same name in one service)  
+
+If the auth user does not have the permission to access to this route, it will be redirect to the `redirect` or `external` path
 
 ## ````<GuestRoutes />````
 Accessible Route only by unauthenticated users.
@@ -52,9 +58,9 @@ Accessible Route only by unauthenticated users.
 ```
 ### props
 This component takes the same props as the `Route` component of `react-router-dom` except that he accepts two more props `redirect` and `external`.
-#### `redirect`
+#### `redirect` (optional)
 Use the `Redirect`component of `react-router-dom` to redirect an authenticated user to a location of your choice inside your app.
-#### `external`
+#### `external` (optional)
 Redirect an authenticated user to a location of your choice outside of your app if your login page is centralized for multiple apps.
 
 ## ````<LoginForm />````
@@ -124,6 +130,14 @@ The redux action to disconnect the user and clear storage and cookies.
 ## ```deleteAuthAction()```
 The redux action to only clear storage and cookies.
 
+## ```useHasPermissions()```
+The custom hooks check if the current auth user has a specific permission for a specific service.
+It return a boolean to indicate if the auth user has or not the permission.
+### Props
+#### `servicePath`
+The service unique path
+#### `permissionName`
+The permission name (there are no multiple permissions with the same name in one service)
 
 ## Environment variable
 ```.env

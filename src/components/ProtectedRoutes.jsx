@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Route, useHistory } from 'react-router-dom';
+import useHasPermissions from '../hooks/useHasPermissions';
 
 import { loginSelector } from '../store/selectors/authSelectors';
 
@@ -37,9 +38,11 @@ const CheckRedirection = ({ redirect = '/', external = '', location }) => {
  * @returns JSX
  */
 const ProtectedRoutes = ({
-  component: Component, redirect = '/login', external = '', ...rest
+  component: Component, redirect = '/login', external = '', permission = [], ...rest
 }) => {
   const { loading, logged } = useSelector(loginSelector);
+
+  const hasPermission = useHasPermissions(permission?.[0] ?? '', permission?.[1] ?? '');
 
   return (
     <Route
@@ -48,7 +51,8 @@ const ProtectedRoutes = ({
         if (loading) {
           return <h1>Loading</h1>;
         }
-        if (logged) {
+        // If logged and if a permission is declare we check that the user has this permission
+        if (logged && (permission?.length === 2 ? hasPermission : true)) {
           return <Component {...props} />;
         }
         return <CheckRedirection redirect={redirect} external={external} location={props.location} />;

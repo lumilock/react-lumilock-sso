@@ -25,14 +25,15 @@ export const CheckAuthAction = (token) => (dispatch) => checkAuth(token).then(
     if (response.type === 'success') {
       // If connection work we update state and give to reducer users info from the request result
       const { data } = response.data;
-      const { token_info: tokenInfo, user } = data;
+      const { token_info: tokenInfo, user, permissions } = data;
       dispatch({
         type: LOGIN_AUTH_SUCCESS,
-        payload: { tokenInfo, user },
+        payload: { tokenInfo, user, permissions },
       });
       // save some data to LocalStorage
       localStorage.setItem('tokenInfo', JSON.stringify(tokenInfo));
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('permissions', JSON.stringify(permissions));
 
       return Promise.resolve({ ...response.data, data: { tokenInfo, user } });
     }
@@ -43,6 +44,7 @@ export const CheckAuthAction = (token) => (dispatch) => checkAuth(token).then(
     // remove data from localStorage
     localStorage.removeItem('tokenInfo');
     localStorage.removeItem('user');
+    localStorage.removeItem('permissions');
     return Promise.reject();
   },
   (error) => {
@@ -56,6 +58,7 @@ export const CheckAuthAction = (token) => (dispatch) => checkAuth(token).then(
     // remove data from localStorage
     localStorage.removeItem('tokenInfo');
     localStorage.removeItem('user');
+    localStorage.removeItem('permissions');
     return Promise.reject();
   },
 );
@@ -79,15 +82,16 @@ export const loginAuthAction = (identity, password) => (dispatch) => AuthService
     if (response.type === 'success') {
       // If connection work we update state and give to reducer users info from the request result
       const { data } = response.data;
-      const { token_info: tokenInfo, user } = data;
+      const { token_info: tokenInfo, user, permissions } = data;
       dispatch({
         type: LOGIN_AUTH_SUCCESS,
-        payload: { tokenInfo, user },
+        payload: { tokenInfo, user, permissions },
       });
       // save some data to LocalStorage
       localStorage.setItem('tokenInfo', JSON.stringify(tokenInfo));
       localStorage.setItem('user', JSON.stringify(user));
-      return Promise.resolve({ ...response.data, data: { tokenInfo, user } });
+      localStorage.setItem('permissions', JSON.stringify(permissions));
+      return Promise.resolve({ ...response.data, data: { tokenInfo, user, permissions } });
     }
     // we update the state
     dispatch({
@@ -96,12 +100,11 @@ export const loginAuthAction = (identity, password) => (dispatch) => AuthService
     // remove data from localStorage
     localStorage.removeItem('tokenInfo');
     localStorage.removeItem('user');
+    localStorage.removeItem('permissions');
     return Promise.reject();
   },
-  (error) => {
+  () => {
     // If an error occurs during the registration
-    // eslint-disable-next-line no-console
-    console.error('loginAuthAction error : ', error);
     // we update the state
     dispatch({
       type: LOGIN_AUTH_FAIL,
@@ -109,6 +112,7 @@ export const loginAuthAction = (identity, password) => (dispatch) => AuthService
     // remove data from localStorage
     localStorage.removeItem('tokenInfo');
     localStorage.removeItem('user');
+    localStorage.removeItem('permissions');
     return Promise.reject();
   },
 );
@@ -130,6 +134,7 @@ export const logoutAuthAction = () => (dispatch) => AuthLogoutService().then(
       // remove data from localStorage
       localStorage.removeItem('tokenInfo');
       localStorage.removeItem('user');
+      localStorage.removeItem('permissions');
       document.cookie = 'LUMILOCK_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       document.cookie = 'LUMILOCK_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       return Promise.resolve({ ...response.data });
@@ -160,6 +165,7 @@ export const deleteAuthAction = () => (dispatch) => {
     // remove data from localStorage
     localStorage.removeItem('tokenInfo');
     localStorage.removeItem('user');
+    localStorage.removeItem('permissions');
     document.cookie = 'LUMILOCK_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     document.cookie = 'LUMILOCK_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     return Promise.resolve('SUCCESS');
@@ -175,4 +181,5 @@ export const NoAuthAction = () => (dispatch) => {
   // remove data from localStorage
   localStorage.removeItem('tokenInfo');
   localStorage.removeItem('user');
+  localStorage.removeItem('permissions');
 };

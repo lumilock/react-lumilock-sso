@@ -44,3 +44,8 @@ export const loginSelector = ({ auth }) => ({
   loading: auth.auth.loading,
   logged: auth.auth.logged,
 });
+
+/**
+ * Return only permissions
+ */
+export const getPermissions = ({ auth }) => auth.infos.permissions;

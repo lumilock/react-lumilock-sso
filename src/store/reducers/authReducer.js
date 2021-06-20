@@ -4,6 +4,7 @@ const initialState = {
     loading: true,
     logged: false,
   },
+  permissions: [],
 };
 
 export const ADD_AUTH_ACTION = 'ADD_AUTH_ACTION';
