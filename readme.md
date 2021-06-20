@@ -1,6 +1,6 @@
 # react-lumilock-sso
 ## 📚 Getting started
-This package allows you to create protected routes using a centralized authentication, a "Single Sign-On - Auth0". For this we use a cookie system, using the [react-cookie]('https://www.npmjs.com/package/react-cookie') library, your applications must therefore be on the same domain.
+This package allows you to create protected routes using a centralized authentication, a "Single Sign-On - Auth0". For this we use a cookie system, ([react-cookie]('https://www.npmjs.com/package/react-cookie') library), your applications must therefore be on the same domain.
 
 Before install react-lumilock-sso you need to install some peerDependancies.  
 This is the liste of peer dependances :
@@ -21,6 +21,9 @@ After that you can install react-lumilock-sso
 ```
 npm install react-lumilock-sso
 ```
+## 📦 Components
+This library allow you tu use multiple components to manage the "Single Sign-On - Auth0" on your app :
+
 ## ````<LumilockProvider />````
 Provider that manages authentication on all routes.
 
@@ -34,10 +37,16 @@ Accessible Route only by authenticated users
 ```
 ### props
 This component takes the same props as the `Route` component of `react-router-dom` except that he accepts two more props `redirect` and `external`.
-#### `redirect`
+#### `redirect` (optional)
 Use the `Redirect`component of `react-router-dom` to redirect an unauthenticated user to a location of your choice inside your app.
-#### `external`
+#### `external` (optional)
 Redirect an unauthenticated user to a location of your choice outside of your app if your login page is centralized for multiple apps.
+#### `permission` (optional)
+An array of two strings :
+1. The service unique path
+2. The permission name (there are no multiple permissions with the same name in one service)  
+
+If the auth user does not have the permission to access to this route, it will be redirect to the `redirect` or `external` path
 
 ## ````<GuestRoutes />````
 Accessible Route only by unauthenticated users.
@@ -49,14 +58,25 @@ Accessible Route only by unauthenticated users.
 ```
 ### props
 This component takes the same props as the `Route` component of `react-router-dom` except that he accepts two more props `redirect` and `external`.
-#### `redirect`
+#### `redirect` (optional)
 Use the `Redirect`component of `react-router-dom` to redirect an authenticated user to a location of your choice inside your app.
-#### `external`
+#### `external` (optional)
 Redirect an authenticated user to a location of your choice outside of your app if your login page is centralized for multiple apps.
+
 ## ````<LoginForm />````
 Component to create the login form which allows users to connect to your api.
+### props
+This component takes only one props to allow you to render form fields
+#### `renderForm`
+Render one jsx element that contain all your fields, 2 fields are required `identity` and `password`, plus a `submit` button.
+This render function have 4 params :
+- `message` : {string} a succes or error message to give a feedback to the user
+- `identity` : {array} an array of messages that concerne the field identity
+- `password` : {array} an array of messages that concerne the field password
+- `loading` : {bool} a boolean to indicate if we are connecting
+ 
 
-
+## 🧰 Functions 
 ## ````authReducer()````
 The redux reducer to create the store, you need to add it in all apps.
 ```js
@@ -70,6 +90,55 @@ const store = createStore(
   ...
 )
 ```
+
+## ````authFullSelector()````
+The redux selector to retrieve raw auth infos.
+
+## ````authSelector()````
+The redux selector to retrieve all auth infos, but formated like following : 
+```json
+{
+  "auth": { /** auth infos */ },
+  "infos": { /** tokens infos */ }
+}
+```
+
+## ```expireSelector()```
+The redux selector to retrieve only the token expiration time in seconds :
+
+## ```loginSelector()```
+The redux selector to return the state of the login :
+```json
+{
+  "loading": true || false, // Is the user connecting ?
+  "logged": true || false // Is the user connected ?
+}
+```
+
+## ```profileSelector()```
+The redux selector to return the auth profile infos :
+```json
+{
+  "fullName": "firstName lastName",
+  "picture": "url/of/picture/profile"
+}
+```
+
+## ```logoutAuthAction()```
+The redux action to disconnect the user and clear storage and cookies.
+
+## ```deleteAuthAction()```
+The redux action to only clear storage and cookies.
+
+## ```useHasPermissions()```
+The custom hooks check if the current auth user has a specific permission for a specific service.
+It return a boolean to indicate if the auth user has or not the permission.
+### Props
+#### `servicePath`
+The service unique path
+#### `permissionName`
+The permission name (there are no multiple permissions with the same name in one service)
+
 ## Environment variable
 ```.env
 REACT_APP_AUTH_API_URL = 'http://your/login/api/'
@@ -189,18 +258,28 @@ import { LoginForm } from 'react-lumilock-sso'
 const Login = () => {
   return <div>
       <h1>Login</h1>
-      <LoginForm />
+      <LoginForm
+          renderForm={
+          (message, identity, password, loading) => (
+            <>
+              <Message error={message ?? ''} /> {/* Message is your component to visualize messages */}
+              <Identity error={identity?.length > 0 ? identity[0] : ''} /> {/* Identity is your input field with id and name `identity` */}
+              <Password error={password?.length > 0 ? password[0] : ''} /> {/* Password is your input field with id and name `password` */}
+              <Submit disabled={!!loading} /> {/* Submit is your submit field */}
+            </>
+          )
+        }
+        />
     </div>
 }
 export default Login
 ```
 
-
-#### Conclusion
+### Conclusion
 We saw how to set up an sso system between two React projects, putting the login page on only one of the two projects. Obviously it is possible to put connection pages on each of your projects, in order to avoid reloading your applications during redirects
 
 ## 📅 soon
-- [ ] add style customization
+- [ ] add permissions
 
 ## 📰 Change log
 

@@ -1,65 +1,71 @@
-import babel from 'rollup-plugin-babel'
-import commonjs from 'rollup-plugin-commonjs'
-import resolve from 'rollup-plugin-node-resolve'
-import external from 'rollup-plugin-peer-deps-external'
-import { terser } from 'rollup-plugin-terser'
-import { uglify } from 'rollup-plugin-uglify'
+import babel from 'rollup-plugin-babel';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+import external from 'rollup-plugin-peer-deps-external';
+import { terser } from 'rollup-plugin-terser';
+import { uglify } from 'rollup-plugin-uglify';
 
-const input = 'src/index.js'
-const output = 'dist/index'
+const input = 'src/index.js';
+const output = 'dist/index';
+
+const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 export default [
   {
-    input: input,
+    input,
     output: {
       file: `${output}.js`,
-      format: 'cjs'
+      format: 'cjs',
     },
     external: ['react-cookie', 'react', 'redux-devtools-extension'], // <-- suppresses the warning
     plugins: [
       resolve({
         browser: true,
-        dedupe: ['react', 'react-dom'] // Default: []
+        dedupe: ['react', 'react-dom'], // Default: []
+        extensions,
+      }),
+      babel({
+        exclude: 'node_modules/**',
+        extensions,
       }),
       commonjs({
         include: ['node_modules/**'],
         namedExports: {
-          'react-dom': ['createPortal']
-        }
-      }),
-      babel({
-        exclude: 'node_modules/**'
+          'react-dom': ['createPortal'],
+        },
       }),
       external(),
-      uglify()
-    ]
+      uglify(),
+    ],
   },
   {
-    input: input,
+    input,
     output: {
       file: `${output}.modern.js`,
-      format: 'es'
+      format: 'es',
     },
     external: ['react-cookie', 'react', 'redux-devtools-extension'], // <-- suppresses the warning
     plugins: [
       resolve({
-        dedupe: ['react', 'react-dom'] // Default: []
+        dedupe: ['react', 'react-dom'], // Default: []
+        extensions,
+      }),
+      babel({
+        exclude: 'node_modules/**',
+        extensions,
       }),
       commonjs({
         include: ['node_modules/**'],
         namedExports: {
-          'react-dom': ['createPortal']
-        }
-      }),
-      babel({
-        exclude: 'node_modules/**'
+          'react-dom': ['createPortal'],
+        },
       }),
       external(),
-      terser()
-    ]
+      terser(),
+    ],
   },
   {
-    input: input,
+    input,
     output: {
       name: 'ReactUi',
       file: `${output}.umd.js`,
@@ -73,26 +79,29 @@ export default [
         'redux-thunk': 'thunk',
         'react-redux': 'reactRedux',
         'react-router-dom': 'reactRouterDom',
-        'redux-devtools-extension': 'reduxDevtoolsExtension'
+        'redux-devtools-extension': 'reduxDevtoolsExtension',
       },
-      format: 'umd'
+      format: 'umd',
     },
     external: ['react-cookie', 'react', 'redux-devtools-extension'], // <-- suppresses the warning
     plugins: [
-      resolve(),
+      resolve({
+        extensions,
+      }),
+      external({
+        dedupe: ['react', 'react-dom'], // Default: []
+        extensions,
+      }),
+      babel({
+        exclude: 'node_modules/**',
+      }),
       commonjs({
         include: ['node_modules/**'],
         namedExports: {
-          'react-dom': ['createPortal']
-        }
+          'react-dom': ['createPortal'],
+        },
       }),
-      external({
-        dedupe: ['react', 'react-dom'] // Default: []
-      }),
-      babel({
-        exclude: 'node_modules/**'
-      }),
-      terser()
-    ]
-  }
-]
+      terser(),
+    ],
+  },
+];
