@@ -17,7 +17,7 @@ export default [
       file: `${output}.js`,
       format: 'cjs',
     },
-    external: ['react-cookie', 'react', 'redux-devtools-extension'], // <-- suppresses the warning
+    external: ['react-cookie', 'react', 'react-dom', 'redux-devtools-extension'], // <-- suppresses the warning
     plugins: [
       resolve({
         browser: true,
@@ -44,7 +44,7 @@ export default [
       file: `${output}.modern.js`,
       format: 'es',
     },
-    external: ['react-cookie', 'react', 'redux-devtools-extension'], // <-- suppresses the warning
+    external: ['react-cookie', 'react', 'react-dom', 'redux-devtools-extension'], // <-- suppresses the warning
     plugins: [
       resolve({
         dedupe: ['react', 'react-dom'], // Default: []
@@ -83,7 +83,7 @@ export default [
       },
       format: 'umd',
     },
-    external: ['react-cookie', 'react', 'redux-devtools-extension'], // <-- suppresses the warning
+    external: ['react-cookie', 'react', 'react-dom', 'redux-devtools-extension'], // <-- suppresses the warning
     plugins: [
       resolve({
         extensions,
