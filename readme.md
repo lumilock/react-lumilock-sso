@@ -1,4 +1,7 @@
 # react-lumilock-sso
+
+[![https://badge.fury.io/js/react-lumilock-sso.svg](https://badge.fury.io/js/react-lumilock-sso.svg)](https://badge.fury.io/js/react-lumilock-sso)
+
 ## 📚 Getting started
 This package allows you to create protected routes using a centralized authentication, a "Single Sign-On - Auth0". For this we use a cookie system, ([react-cookie]('https://www.npmjs.com/package/react-cookie') library), your applications must therefore be on the same domain.
 
@@ -155,54 +158,6 @@ On the two front-end app we install the `react-lumilock-sso` package.
 ```shell
 npm install react-lumilock-sso
 ```
-### Parcel app
-First we add environnement variable in `.env`
-
-#### `file : .env` 
-```.env
-REACT_APP_AUTH_API_URL = 'http://localhost:8000/api/auth/'
-```
-Then we configure the  `redux` store
-
-#### `file : ./store/index.js` 
-```jsx
-...
-import { authReducer } from 'react-lumilock-sso'
-...
-const store = createStore(
-  combineReducers({
-    ...
-    auth: authReducer
-  }),
-  ...
-)
-```
-Now we can add the protected route to our app, for this exemple we made all the route inside the root of the project.  
-#### `file : ./index.js`
-```jsx
-...
-import { LumilockProvider, ProtectedRoutes } from "react-lumilock-sso";
-...
-function App() {
-  ...
-  return (
-    <Provider store={store}>
-      <LumilockProvider>
-        <Router>
-         ...
-          <Switch>
-            ...
-            <ProtectedRoutes path="/dashboard" external="http://localhost:3000/login" exact component={Dashboard} />
-            <ProtectedRoutes path="/profile" external="http://localhost:3000/login" exact component={Profile} />
-            ...
-          </Switch>
-        </Router>
-      </LumilockProvider>
-    </Provider>
-  );
-}
-```
-### Create-react-app
 First we add environnement variable in `.env`
 
 #### `file : .env` 
@@ -298,3 +253,7 @@ license. Please see the [license file](license.md) for more information.
 
 [link-author]: https://github.com/lumilock
 [link-contributors]: ../../contributors]
+[link-contributors]: https://www.npmjs.com/package/react-lumilock-sso
+
+[npm badge img]: https://badge.fury.io/js/react-lumilock-sso.svg
+[npm link]: https://badge.fury.io/js/react-lumilock-sso

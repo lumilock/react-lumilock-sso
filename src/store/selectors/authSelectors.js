@@ -23,8 +23,8 @@ export const authSelector = ({ auth }) => {
 export const profileSelector = ({ auth }) => {
   const { infos } = auth; // we isolate info
   return {
-    fullName: `${infos.user.first_name} ${infos.user.last_name}` ?? '',
-    picture: infos.user.picture ?? '',
+    fullName: `${infos?.user?.first_name} ${infos?.user?.last_name}` ?? '',
+    picture: infos?.user?.picture ?? '',
   };
 };
 
