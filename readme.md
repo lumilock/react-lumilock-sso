@@ -1,5 +1,5 @@
 # react-lumilock-sso
-
+## ⚠️ This repository is deprecated go to [lumilock-idp](https://github.com/lumilock/lumilock-idp) ⚠️
 [![https://badge.fury.io/js/react-lumilock-sso.svg](https://badge.fury.io/js/react-lumilock-sso.svg)](https://badge.fury.io/js/react-lumilock-sso)
 
 ## 📚 Getting started
